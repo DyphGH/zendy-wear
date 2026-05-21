@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" preserveAspectRatio="xMidYMid slice">
+  <!-- Background -->
+  <defs>
+    <radialGradient id="g1" cx="20%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#9b30ff" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#04040a" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="85%" cy="80%" r="70%">
+      <stop offset="0%" stop-color="#ff2dca" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#04040a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g3" cx="60%" cy="20%" r="40%">
+      <stop offset="0%" stop-color="#b8ff00" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#04040a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 1
+                             0 0 0 0 1
+                             0 0 0 0 1
+                             0 0 0 .03 0"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="#04040a"/>
+  <rect width="1200" height="630" fill="url(#g1)"/>
+  <rect width="1200" height="630" fill="url(#g2)"/>
+  <rect width="1200" height="630" fill="url(#g3)"/>
+  <rect width="1200" height="630" filter="url(#grain)" opacity="0.7"/>
+
+  <!-- Top eyebrow text -->
+  <g font-family="DM Mono, monospace" fill="#8a8a9e" font-size="20" letter-spacing="9">
+    <text x="80" y="100" text-transform="uppercase">FALL 2026 · DROP 001</text>
+  </g>
+
+  <!-- Main wordmark -->
+  <g font-family="Bebas Neue, Impact, sans-serif" letter-spacing="6">
+    <!-- Outlined "Submerge" -->
+    <text x="80" y="290" font-size="180" fill="none" stroke="#f0ede8" stroke-width="2">SUBMERGE</text>
+    <!-- Filled "Yourself" -->
+    <text x="80" y="450" font-size="180" fill="#ff2dca">YOURSELF</text>
+  </g>
+
+  <!-- Bottom row -->
+  <g font-family="DM Mono, monospace" font-size="22" letter-spacing="6" fill="#f0ede8">
+    <text x="80" y="560" text-transform="uppercase">ZENDY WEAR<tspan fill="#ff2dca">®</tspan> · SUBMERSIVE STREETWEAR</text>
+  </g>
+  <g font-family="DM Mono, monospace" font-size="18" letter-spacing="5" fill="#8a8a9e">
+    <text x="80" y="592" text-transform="uppercase">MADE IN PORTUGAL · 150 UNITS EACH · NO RESTOCKS</text>
+  </g>
+
+  <!-- Accent corner mark -->
+  <g transform="translate(1060,80)">
+    <circle r="44" fill="none" stroke="#b8ff00" stroke-width="2"/>
+    <text x="0" y="8" text-anchor="middle" font-family="Bebas Neue, Impact, sans-serif" font-size="36" fill="#b8ff00">001</text>
+  </g>
+</svg>

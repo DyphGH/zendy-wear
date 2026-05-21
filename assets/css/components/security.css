@@ -1,0 +1,39 @@
+/* Protecção de conteúdo — seleção só em campos editáveis */
+
+html,
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+select,
+option,
+[data-allow-select],
+.newsletter input,
+.phone-national,
+.phone-dial,
+.site-modal__form input,
+.site-modal__form textarea {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* Imagens e media — não arrastar */
+img,
+picture img,
+svg,
+video,
+canvas {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* Links externos mantêm comportamento normal; texto do link não seleccionável */
+a {
+  -webkit-user-select: none;
+  user-select: none;
+}

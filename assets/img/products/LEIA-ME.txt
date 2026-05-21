@@ -1,0 +1,41 @@
+Qualidade das fotos de produto
+=============================
+
+A pasta  source/  está VAZIA de propósito — é onde TU colocas os ficheiros bons.
+
+PASSO A PASSO
+-------------
+
+0. Recuperação automática (cópias de 16 Mai, antes dos scripts que estragaram):
+
+   npm run restore-photos
+
+   Isto repõe os masters a partir de *-1600.jpeg e copia também para source/.
+
+1. Abre no Explorador de Ficheiros:
+
+   zendy-wear\assets\img\products\source\
+
+2. Copia para lá os 5 JPEG ORIGINAIS (qualidade máxima):
+   - Detail_Collar.jpeg
+   - Logo_Front.jpeg
+   - Heads_Back.jpeg
+   - Sun_Back.jpeg
+   - Skull_Back.jpeg
+
+   (Exportação do Photoshop / ficheiros da câmara — NÃO uses os que já
+    estão em products/ se foram processados pelo site.)
+
+3. Se não tens backup local:
+   OneDrive → clica direito no ficheiro em products/ → Histórico de versões
+   → escolhe uma versão ANTERIOR → Guardar cópia em source/
+
+4. No terminal, na pasta zendy-wear:
+
+   npm run products-from-source
+   npm run optimize
+
+5. No browser: Ctrl+Shift+R
+
+O comando products-from-source só COPIA ficheiros de source/ → products/.
+Sem ficheiros em source/, o erro "Nenhum JPEG em source/" é normal.

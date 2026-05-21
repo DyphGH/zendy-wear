@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /assets/img/og/
+
+# AI scrapers — block by default. Remove these lines if you want LLM
+# training crawlers to index Zendy Wear content.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+Sitemap: https://zendywear.com/sitemap.xml

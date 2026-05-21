@@ -1,0 +1,205 @@
+/* =============================================================================
+   hero.css — first-fold hero section
+   The blurred orbs are the v1 fallback. Phase 3 replaces them with a
+   Three.js displaced sphere, BUT the orbs remain as the fallback for
+   reduced-motion / low-end / no-WebGL devices.
+   ============================================================================= */
+
+.hero {
+  height: 100vh;
+  min-height: 600px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-content);
+}
+
+/* Container the WebGL canvas mounts into in Phase 3. Empty until then. */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.72; /* tame bloom bleed from the 3D blob */
+}
+
+/* Orbs (fallback, always present) */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: orbF 8s ease-in-out infinite;
+  will-change: transform;
+}
+.orb-1 { width: 420px; height: 420px; background: rgba(155, 48, 255, 0.07); top: -10%;   right: -5%;  animation-delay:  0s; }
+.orb-2 { width: 340px; height: 340px; background: rgba(255, 45, 202, 0.06); bottom: 5%;  left:  -10%; animation-delay: -3s; }
+.orb-3 { width: 260px; height: 260px; background: rgba(184, 255,   0, 0.04); top: 30%;  left:   40%; animation-delay: -5s; }
+@keyframes orbF {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-30px) scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Meta lines — legíveis sobre o blob WebGL */
+.hero-meta {
+  display: inline-block;
+  max-width: min(100%, 40rem);
+  padding: 0.45rem 1rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 1.6vw, 0.78rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.45;
+  color: rgba(240, 237, 232, 0.92);
+  background: rgba(4, 4, 10, 0.62);
+  border: 1px solid rgba(240, 237, 232, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-shadow:
+    0 1px 2px rgba(4, 4, 10, 0.9),
+    0 0 20px rgba(4, 4, 10, 0.75);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.hero-eye {
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.3s forwards;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 16vw, 14rem);
+  letter-spacing: -0.01em;
+  line-height: 0.88;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.4s forwards;
+}
+.hero-title .l1 {
+  display: block;
+  -webkit-text-stroke: 2px var(--fg);
+  color: rgba(240, 237, 232, 0.04);
+  text-shadow: 0 0 16px rgba(255, 45, 202, 0.1);
+}
+.hero-title .l2 { display: block; color: var(--fg); }
+.hero-title .l3 { display: block; color: var(--pink); }
+
+.hero-sub {
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.5s forwards;
+}
+
+.hero-sub span {
+  color: var(--pink);
+  opacity: 1;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.6s forwards;
+}
+
+.btn-p, .btn-g {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.2rem;
+  cursor: pointer;
+}
+.btn-p {
+  color: var(--bg);
+  background: var(--fg);
+  position: relative;
+  overflow: hidden;
+  transition: color var(--dur-base);
+  border: none;
+}
+.btn-p::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pink);
+  transform: translateX(-101%);
+  transition: transform 0.35s var(--ease-out-quart);
+}
+.btn-p:hover::before, .btn-p:focus-visible::before { transform: translateX(0); }
+.btn-p > * { position: relative; z-index: 1; }
+
+.btn-g {
+  color: var(--fg);
+  border: 1px solid rgba(240, 237, 232, 0.3);
+  background: transparent;
+  transition: border-color var(--dur-base), background var(--dur-base);
+}
+.btn-g:hover, .btn-g:focus-visible {
+  border-color: var(--fg);
+  background: rgba(240, 237, 232, 0.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-eye, .hero-title, .hero-sub, .hero-btns {
+    animation: none;
+    opacity: 1;
+  }
+  .btn-p::before { transition: none; }
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  z-index: 2;
+  animation: scrollB 2.2s ease infinite;
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--muted), transparent);
+}
+@keyframes scrollB {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(7px); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll { animation: none; }
+}

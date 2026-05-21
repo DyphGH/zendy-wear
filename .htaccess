@@ -1,0 +1,57 @@
+# =============================================================================
+# ZENDY WEAR — Apache .htaccess (for cPanel / shared Apache hosting)
+# Mirror of _headers (Netlify) and vercel.json (Vercel).
+# Only one of these three is needed in production — pick by host.
+# =============================================================================
+
+# ---- Force HTTPS ------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---- Security headers -------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'sha256-hBcVcGnZ45V0r+hKRdvaDAEcfOUliJqhYLHandfCazY=' https://cdn.jsdelivr.net https://unpkg.com https://js.stripe.com; connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://ipapi.co https://ipwho.is https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(self), interest-cohort=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+  Header always set X-DNS-Prefetch-Control "off"
+  Header always set X-Permitted-Cross-Domain-Policies "none"
+</IfModule>
+
+# ---- Caching ----------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html                   "access plus 0 seconds"
+  ExpiresByType text/css                    "access plus 1 day"
+  ExpiresByType application/javascript      "access plus 1 day"
+  ExpiresByType image/jpeg                  "access plus 30 days"
+  ExpiresByType image/png                   "access plus 30 days"
+  ExpiresByType image/webp                  "access plus 30 days"
+  ExpiresByType image/avif                  "access plus 30 days"
+  ExpiresByType image/svg+xml               "access plus 30 days"
+  ExpiresByType font/woff2                  "access plus 1 year"
+  ExpiresByType application/manifest+json   "access plus 1 day"
+</IfModule>
+
+# ---- Compression ------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml application/manifest+json
+</IfModule>
+
+# ---- MIME types -------------------------------------------------------------
+AddType image/avif .avif
+AddType image/webp .webp
+AddType application/manifest+json .webmanifest
+
+# ---- Prevent directory listing ----------------------------------------------
+Options -Indexes
+
+# ---- Custom error pages (404) -----------------------------------------------
+ErrorDocument 404 /index.html

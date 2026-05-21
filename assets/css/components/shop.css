@@ -1,0 +1,364 @@
+/* =============================================================================
+   shop.css — product grid, cards, 3-state viewer (Front/Back/Collar)
+   The viewer is now built around proper role="tablist" / role="tabpanel"
+   semantics. Same visual cross-fade, accessible to screen readers + keyboard.
+   ============================================================================= */
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+@media (max-width: 1000px) { .shop-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 580px)  { .shop-grid { grid-template-columns: 1fr; } }
+
+/* ============================ PRODUCT CARD =============================== */
+
+.pc-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 12;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: rgba(4, 4, 10, 0.82);
+  border: 1px solid rgba(255, 45, 202, 0.45);
+  padding: 0.35rem 0.55rem;
+  pointer-events: none;
+}
+
+.pc {
+  background: rgba(4, 4, 10, 0.38);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  /* No transition during mousemove (snappy follow). reset-tilt adds one
+     for the smooth recovery on mouseleave — added by effects.js. */
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.pc.reset-tilt {
+  transition: transform 600ms var(--ease-out-quart);
+}
+
+/* Hover glow — neon pink edge that lifts the card */
+.pc::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px transparent, 0 0 0 0 transparent;
+  transition: box-shadow 350ms var(--ease-out-quart);
+  z-index: 5;
+}
+.pc:hover::after,
+.pc:focus-within::after {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 45, 202, 0.55),
+    0 0 32px rgba(255, 45, 202, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc {
+    transform: none !important;
+    transition: none !important;
+    --tilt-x: 0deg !important;
+    --tilt-y: 0deg !important;
+  }
+  .pc::after { transition: none; }
+}
+
+/* ============================ VIEWER ===================================== */
+
+.shirt-viewer {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  overflow: hidden;
+  background: #080810;
+  touch-action: pan-y;
+}
+
+.view-stage {
+  position: absolute;
+  inset: 0;
+}
+.view-pane {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 0.5s ease, transform 0.6s var(--ease-out-quart);
+  pointer-events: none;
+}
+.view-pane.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.view-pane img,
+.view-pane picture,
+.view-pane picture img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .view-pane { transition: opacity 0.15s linear; transform: none; }
+  .view-pane.active { transform: none; }
+}
+
+/* Tabs */
+.view-tabs {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  z-index: 10;
+  background: linear-gradient(transparent, rgba(4, 4, 10, 0.92));
+  /* Above the bg fade so taps land on buttons */
+}
+.vt {
+  flex: 1;
+  padding: 0.85rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.55);
+  background: none;
+  border: none;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+  min-height: 44px; /* a11y: touch target */
+}
+.vt[aria-selected="true"] {
+  color: var(--fg);
+  border-top-color: var(--pink);
+}
+.vt:hover, .vt:focus-visible { color: var(--fg); }
+@media (prefers-reduced-motion: reduce) {
+  .vt { transition: none; }
+}
+
+/* ============================ PRODUCT INFO =============================== */
+
+.pi {
+  padding: 1.2rem 1.2rem 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.pn {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.ps {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+.pb {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.pp {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--pink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.price-compare {
+  font-size: 1.05rem;
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.85;
+}
+
+.price-now {
+  color: var(--pink);
+}
+
+.shop-promo-hint {
+  margin: 0.35rem 0 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.shop-promo-hint[hidden] {
+  display: none;
+}
+
+/* Size block — visible picker area */
+.size-block {
+  margin: 1rem 0 1.1rem;
+  padding: 0.85rem 0.9rem 0.75rem;
+  border: 1px solid rgba(255, 45, 202, 0.28);
+  background: rgba(4, 4, 10, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(155, 48, 255, 0.08);
+}
+
+.size-block.is-pending {
+  animation: sizePulse 2.4s ease-in-out infinite;
+}
+
+@keyframes sizePulse {
+  0%, 100% { border-color: rgba(255, 45, 202, 0.22); }
+  50%      { border-color: rgba(255, 45, 202, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .size-block.is-pending { animation: none; border-color: rgba(255, 45, 202, 0.4); }
+}
+
+.size-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.size-block__label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.size-block__guide {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.size-block__guide:hover,
+.size-block__guide:focus-visible {
+  color: var(--fg);
+  outline: none;
+}
+
+.size-block__status {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.size-block.is-pending .size-block__status {
+  color: var(--pink);
+}
+
+.size-block.has-size .size-block__status {
+  color: var(--green);
+}
+
+.size-selector {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+@media (max-width: 420px) {
+  .size-selector {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.size-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  background: rgba(4, 4, 10, 0.6);
+  border: 1px solid var(--border);
+  padding: 0.7rem 0.35rem;
+  min-height: 44px;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast), box-shadow var(--dur-fast);
+}
+.size-btn:hover, .size-btn:focus-visible {
+  border-color: var(--fg);
+  color: var(--fg);
+  transform: translateY(-1px);
+}
+.size-btn[aria-pressed="true"] {
+  border-color: var(--pink);
+  color: var(--fg);
+  background: rgba(255, 45, 202, 0.18);
+  box-shadow: 0 0 18px rgba(255, 45, 202, 0.28);
+  transform: translateY(-1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .size-btn { transition: none; }
+  .size-btn:hover { transform: none; }
+}
+
+.pa {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), color var(--dur-fast), background var(--dur-fast);
+  min-height: 40px;
+}
+.pa:hover, .pa:focus-visible {
+  border-color: var(--fg);
+  color: var(--fg);
+  background: rgba(240, 237, 232, 0.04);
+}
+.pa[disabled],
+.pa[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.pa[disabled]:hover,
+.pa[aria-disabled="true"]:hover {
+  border-color: var(--border);
+  color: var(--muted);
+  background: none;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "zendy-wear",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize": "node scripts/optimize-images.mjs",
+    "clean:images": "node scripts/clean-orphan-images.mjs",
+    "products-from-source": "node scripts/products-from-source.mjs",
+    "restore-photos": "node scripts/restore-from-variants.mjs",
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "serve": "npm run start"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "stripe": "^17.7.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
+  }
+}

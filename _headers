@@ -1,0 +1,55 @@
+# =============================================================================
+# Netlify _headers — ZENDY WEAR
+# Primary deployment target. Mirrors what's in `<meta http-equiv>` in index.html
+# but applied at HTTP layer (more trusted by browsers, e.g. for frame-ancestors).
+# =============================================================================
+
+/*
+  # ---- Content Security Policy ------------------------------------------------
+  # script-src strict: only self + the two pinned CDNs we use (jsdelivr, unpkg).
+  # No 'unsafe-inline' for scripts. 'unsafe-inline' is allowed for styles only —
+  # the inlined critical CSS in <head> requires it. Justified: styles can't be
+  # used to exfiltrate data the way inline scripts can.
+  # When Stripe is added in Phase 2+: append
+  #   script-src ... https://js.stripe.com;
+  #   frame-src https://js.stripe.com https://hooks.stripe.com;
+  #   connect-src ... https://api.stripe.com;
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'sha256-hBcVcGnZ45V0r+hKRdvaDAEcfOUliJqhYLHandfCazY=' https://cdn.jsdelivr.net https://unpkg.com https://js.stripe.com; connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://ipapi.co https://ipwho.is https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests
+
+  # ---- Other security headers -------------------------------------------------
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-DNS-Prefetch-Control: off
+  X-Permitted-Cross-Domain-Policies: none
+
+# ---- Caching ----------------------------------------------------------------
+# HTML: no long cache (revalidate on each visit so deploys ship immediately)
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Hashed/fingerprinted assets — long cache. We don't fingerprint yet, so
+# these are conservative; tighten to `max-age=31536000, immutable` once
+# you add a build step that hashes filenames.
+/assets/img/*
+  Cache-Control: public, max-age=2592000
+
+/assets/css/*
+  Cache-Control: public, max-age=86400
+
+/assets/js/*
+  Cache-Control: public, max-age=86400
+
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service worker must NEVER be cached long — needs to update immediately.
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate

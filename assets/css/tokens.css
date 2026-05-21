@@ -1,0 +1,82 @@
+/* =============================================================================
+   ZENDY WEAR — Design tokens
+   The single source of truth for colors, typography, spacing, motion.
+   Change these here and the whole site follows.
+   ============================================================================= */
+
+:root {
+  /* ---- Brand palette ----------------------------------------------------- */
+  --bg:        #04040a;
+  --fg:        #f0ede8;
+  --pink:      #ff2dca;
+  --green:     #b8ff00;
+  --purple:    #9b30ff;
+  --cyan:      #00e5ff;
+
+  /* Muted comes in two flavors:
+     --muted     is for SMALL TEXT and passes WCAG 2.2 AA (4.5:1 on --bg)
+     --muted-2   is for hairlines, decorative borders, NON-TEXT only
+     This split fixes the failing contrast (#40404e ≈ 3.7:1) flagged in audit. */
+  --muted:     #8a8a9e;
+  --muted-2:   #40404e;
+  --border:    #111118;
+
+  /* Optional High-contrast escalation, via @media(prefers-contrast:more) below */
+  --focus-ring: var(--pink);
+
+  /* ---- Typography -------------------------------------------------------- */
+  --font-display: 'Bebas Neue', 'Impact', sans-serif;
+  --font-mono:    'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ---- Spacing scale ----------------------------------------------------- */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+
+  /* ---- Layout ------------------------------------------------------------ */
+  --section-pad-x: clamp(1.5rem, 4vw, 3rem);
+  --section-pad-y: clamp(5rem, 10vw, 8rem);
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --ease-out-quart: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:   180ms;
+  --dur-base:   350ms;
+  --dur-slow:   600ms;
+
+  /* ---- Z-index scale ----------------------------------------------------- */
+  --z-shader:  0;
+  --z-content: 1;
+  --z-nav:     1000;
+  --z-cart:    9500;
+  --z-modal:   10050;
+  --z-noise:   9998;
+  --z-cursor:  10200;
+  --z-loader:  10000;
+}
+
+/* High-contrast preference — beef up borders, widen focus ring. */
+@media (prefers-contrast: more) {
+  :root {
+    --muted:    #b4b4c4;   /* ~7:1 contrast */
+    --border:   #2a2a36;   /* visible without being loud */
+  }
+}
+
+/* Forced-colors (Windows High Contrast mode) — let the OS take over. */
+@media (forced-colors: active) {
+  :root {
+    --bg:    Canvas;
+    --fg:    CanvasText;
+    --pink:  LinkText;
+    --green: LinkText;
+    --purple: LinkText;
+    --border: GrayText;
+    --muted:  GrayText;
+  }
+}

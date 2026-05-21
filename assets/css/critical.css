@@ -1,0 +1,134 @@
+/* =============================================================================
+   ZENDY WEAR — Critical CSS (inlined in <head>)
+   Goal: render the loader + first paint correctly even before main.css loads.
+   Keep this under ~3KB. Anything not strictly needed for first paint goes to
+   main.css.
+   ============================================================================= */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html.is-loading,
+html.is-loading body { overflow: hidden; height: 100%; }
+html, body { -webkit-user-select: none; user-select: none; }
+input, textarea, select { -webkit-user-select: text; user-select: text; }
+img { -webkit-user-drag: none; }
+body {
+  background: #04040a;
+  color: #f0ede8;
+  font-family: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  overflow-x: hidden;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide native cursor only on fine-pointer + hover-capable devices (desktop).
+   Touch/keyboard users always see the system cursor / focus rings. */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor body, html.has-cursor body * { cursor: none; }
+}
+
+/* Skip link — invisible until focused. Required for keyboard a11y. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #f0ede8;
+  color: #04040a;
+  padding: 0.75rem 1.25rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  z-index: 10001;
+  transition: top 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.skip-link:focus { top: 0; outline: 2px solid #ff2dca; outline-offset: 2px; }
+
+/* Loader — visible immediately, hides once main JS signals ready. */
+#loader {
+  position: fixed; inset: 0;
+  background: #04040a;
+  z-index: 10000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+              visibility 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+#loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.l-inner { display: flex; flex-direction: column; align-items: center; }
+.l-line { overflow: hidden; line-height: 1; }
+.l-word {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(4.5rem, 14vw, 11rem);
+  letter-spacing: 0.18em;
+  display: block;
+  transform: translateY(105%);
+  animation: lSlide 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.l-line:nth-child(1) .l-word { animation-delay: 0.1s; }
+.l-line:nth-child(3) .l-word {
+  animation-delay: 0.22s;
+  color: rgba(240, 237, 232, 0.06);          /* tiny fill so chars have body */
+  -webkit-text-stroke: 2px #f0ede8;          /* up from 1px — was too ghostly */
+  text-shadow: 0 0 18px rgba(255, 45, 202, 0.25);  /* subtle brand glow */
+}
+.l-div {
+  width: 100%;
+  height: 1px;
+  background: #111118;
+  margin: 0.6rem 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: lLine 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+.l-sub {
+  font-size: 0.62rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #8a8a9e;
+  opacity: 0;
+  animation: lFade 0.5s ease 0.75s forwards;
+  align-self: flex-end;
+}
+.l-bar-w {
+  width: clamp(200px, 30vw, 360px);
+  height: 1px;
+  background: #111118;
+  margin-top: 3rem;
+  overflow: hidden;
+  opacity: 0;
+  animation: lFade 0.4s ease 0.8s forwards;
+}
+.l-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2dca, #f0ede8);
+  width: 0%;
+  animation: lProg 2.0s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
+}
+.l-meta {
+  margin-top: 1.4rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: #6a6a7e;
+  opacity: 0;
+  animation: lFade 0.6s ease 2.4s forwards;  /* last to arrive */
+}
+.l-meta .dot { color: #ff2dca; margin: 0 0.6em; }
+@keyframes lSlide { to { transform: translateY(0); } }
+@keyframes lLine  { to { transform: scaleX(1); } }
+@keyframes lFade  { to { opacity: 1; } }
+@keyframes lProg  { 0% { width: 0%; } 60% { width: 72%; } 100% { width: 100%; } }
+
+/* Reduced-motion: pop the loader in immediately, no slide/progress drama. */
+@media (prefers-reduced-motion: reduce) {
+  .l-word, .l-div, .l-sub, .l-bar-w, .l-bar, .l-meta {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  #loader { transition: opacity 0.2s linear, visibility 0.2s linear; }
+}
