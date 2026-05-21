@@ -623,7 +623,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
 .toast {
   position: fixed;
   bottom: 2rem; left: 50%;
-  transform: translateX(-50%) translateY(120%);
+  transform: translateX(-50%) translateY(1.25rem);
   background: var(--fg);
   color: var(--bg);
   padding: 0.85rem 1.4rem;
@@ -632,14 +632,32 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   z-index: 9700;
-  transition: transform var(--dur-base) var(--ease-out-quart);
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   max-width: calc(100vw - 2rem);
+  transition:
+    transform var(--dur-base) var(--ease-out-quart),
+    opacity var(--dur-fast) linear,
+    visibility 0s linear var(--dur-base);
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform var(--dur-base) var(--ease-out-quart),
+    opacity var(--dur-fast) linear,
+    visibility 0s;
+}
 @media (prefers-reduced-motion: reduce) {
-  .toast { transition: opacity var(--dur-fast) linear; }
-  .toast.show { opacity: 1; }
+  .toast {
+    transform: translateX(-50%) translateY(0);
+    transition: opacity var(--dur-fast) linear, visibility 0s linear var(--dur-fast);
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* ============================ PHASE 3 — 3D LAYER ========================= */

@@ -170,19 +170,42 @@ export function formatEUR(n, opts = {}) {
 
 let toastEl = null;
 let toastTimer = null;
-export function showToast(message, ms = 1800) {
+let toastClearTimer = null;
+
+const TOAST_HIDE_MS = 400;
+
+function clearToastContent() {
+  if (!toastEl || toastEl.classList.contains('show')) return;
+  toastEl.textContent = '';
+  toastEl.setAttribute('aria-hidden', 'true');
+}
+
+export function showToast(message, ms = 2200) {
   if (!toastEl) {
     toastEl = document.createElement('div');
     toastEl.className = 'toast';
     toastEl.setAttribute('role', 'status');
     toastEl.setAttribute('aria-live', 'polite');
+    toastEl.setAttribute('aria-hidden', 'true');
+    toastEl.addEventListener('transitionend', (e) => {
+      if (e.target !== toastEl || e.propertyName !== 'opacity') return;
+      if (!toastEl.classList.contains('show')) clearToastContent();
+    });
     document.body.appendChild(toastEl);
   }
+
+  clearTimeout(toastTimer);
+  clearTimeout(toastClearTimer);
   toastEl.textContent = message;
+  toastEl.setAttribute('aria-hidden', 'false');
+  toastEl.classList.remove('show');
   void toastEl.offsetWidth;
   toastEl.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms);
+
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove('show');
+    toastClearTimer = setTimeout(clearToastContent, TOAST_HIDE_MS + 80);
+  }, ms);
 }
 
 export const storage = {

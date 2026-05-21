@@ -2,7 +2,26 @@
  * Middleware de segurança HTTP (Express local + espelho dos headers estáticos).
  */
 
+/** Keep in sync with _headers / index.html <meta http-equiv="Content-Security-Policy"> */
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self' mailto:",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' https://fonts.gstatic.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "script-src 'self' 'sha256-hBcVcGnZ45V0r+hKRdvaDAEcfOUliJqhYLHandfCazY=' https://cdn.jsdelivr.net https://unpkg.com https://js.stripe.com",
+  "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://ipapi.co https://ipwho.is https://api.stripe.com",
+  'frame-src https://js.stripe.com https://hooks.stripe.com',
+  "manifest-src 'self'",
+  "worker-src 'self'",
+  'upgrade-insecure-requests',
+].join('; ');
+
 const SECURITY_HEADERS = {
+  'Content-Security-Policy': CONTENT_SECURITY_POLICY,
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -12,6 +31,14 @@ const SECURITY_HEADERS = {
   'X-DNS-Prefetch-Control': 'off',
   'X-Permitted-Cross-Domain-Policies': 'none',
 };
+
+const HSTS_VALUE = 'max-age=63072000; includeSubDomains; preload';
+
+function isHttpsRequest(req) {
+  if (req.secure) return true;
+  const proto = req.headers['x-forwarded-proto'];
+  return typeof proto === 'string' && proto.split(',')[0].trim() === 'https';
+}
 
 const BLOCKED_PREFIXES = [
   '/.env',
@@ -24,9 +51,12 @@ const BLOCKED_PREFIXES = [
   '/package-lock.json',
 ];
 
-export function applySecurityHeaders(_req, res, next) {
+export function applySecurityHeaders(req, res, next) {
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
     res.setHeader(key, value);
+  }
+  if (isHttpsRequest(req)) {
+    res.setHeader('Strict-Transport-Security', HSTS_VALUE);
   }
   next();
 }
