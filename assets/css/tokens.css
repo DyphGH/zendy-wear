@@ -17,8 +17,9 @@
      --muted     is for SMALL TEXT and passes WCAG 2.2 AA (4.5:1 on --bg)
      --muted-2   is for hairlines, decorative borders, NON-TEXT only
      This split fixes the failing contrast (#40404e ≈ 3.7:1) flagged in audit. */
-  --muted:     #8a8a9e;
-  --muted-2:   #40404e;
+  --muted:     #9ba8be;   /* ~5.2:1 on --bg — small captions (WCAG AA) */
+  --muted-2:   #40404e;   /* borders / decoration only — never body text */
+  --text-caption: 0.75rem; /* 12px floor for muted UI copy (WAVE) */
   --border:    #111118;
 
   /* Optional High-contrast escalation, via @media(prefers-contrast:more) below */

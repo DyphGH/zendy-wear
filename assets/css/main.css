@@ -159,7 +159,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
   z-index: var(--z-content);
 }
 .sl {
-  font-size: 0.6rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--pink);
@@ -460,7 +460,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
 
 .newsletter-hint {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
   color: var(--muted);
   line-height: 1.5;
   margin: 0;
@@ -483,7 +483,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
 
 .fc {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--text-caption);
   color: var(--muted);
   letter-spacing: 0.08em;
   margin: 0;
@@ -491,7 +491,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
 
 .fm {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -499,7 +499,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
   text-align: right;
 }
 
-.fm span { color: rgba(255, 45, 202, 0.55); }
+.fm span { color: var(--pink); }
 
 @media (max-width: 900px) {
   .site-footer__grid {
@@ -582,7 +582,7 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
 
 .newsletter-msg {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.06em;
   color: var(--muted);
   min-height: 1.2em;

@@ -98,8 +98,8 @@ nav.site-nav.is-scrolled {
   border-bottom-color: var(--pink);
 }
 .lang-sep {
-  color: var(--muted-2);
-  font-size: 0.65rem;
+  color: var(--muted);
+  font-size: var(--text-caption);
   user-select: none;
 }
 

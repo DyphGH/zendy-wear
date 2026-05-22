@@ -259,7 +259,7 @@ html.overlay-scroll-lock body {
 
 .site-modal__form label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -267,7 +267,7 @@ html.overlay-scroll-lock body {
 
 .phone-field__label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -303,7 +303,7 @@ html.overlay-scroll-lock body {
 .phone-field__hint {
   margin: 0.4rem 0 0;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.04em;
   color: var(--muted);
   line-height: 1.4;

@@ -211,7 +211,7 @@
 
 .cart-help__btn {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -254,7 +254,7 @@
   cursor: not-allowed;
 }
 .cart-foot-note {
-  font-size: 0.58rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.15em;
   color: var(--muted);
   text-align: center;

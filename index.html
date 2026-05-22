@@ -361,15 +361,15 @@ img{-webkit-user-drag:none;user-drag:none}
             <div class="view-stage">
               <div class="view-pane" id="v-heads-p-front" role="tabpanel" aria-labelledby="v-heads-t-front" tabindex="0" hidden>
                 <img data-responsive data-quality="max" src="/assets/img/products/Logo_Front.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Melting Heads t-shirt — front view. Black heavyweight cotton with small white Zendy Wear wordmark on left chest.">
+                     alt="Melting Heads — frente, logótipo Zendy Wear no peito.">
               </div>
               <div class="view-pane active" id="v-heads-p-back" role="tabpanel" aria-labelledby="v-heads-t-back" tabindex="0">
                 <img data-responsive data-quality="max" src="/assets/img/products/Heads_Back.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Melting Heads t-shirt — back view. Three-by-three grid of dripping, distorted faces in neon pink, purple, cyan, lime and magenta with glitch-style typography fragments.">
+                     alt="Melting Heads — costas, grelha de rostos derretidos em neon rosa, roxo, ciano e lima.">
               </div>
               <div class="view-pane" id="v-heads-p-collar" role="tabpanel" aria-labelledby="v-heads-t-collar" tabindex="0" hidden>
                 <img data-responsive data-quality="max" src="/assets/img/products/Detail_Collar.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Interior collar label — Zendy Wear care tag.">
+                     alt="Etiqueta interior Zendy Wear."
               </div>
             </div>
             <div class="view-tabs" role="tablist" aria-label="Melting Heads views">
@@ -416,15 +416,15 @@ img{-webkit-user-drag:none;user-drag:none}
             <div class="view-stage">
               <div class="view-pane" id="v-sun-p-front" role="tabpanel" aria-labelledby="v-sun-t-front" tabindex="0" hidden>
                 <img data-responsive data-quality="max" src="/assets/img/products/Logo_Front.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Sun and Moon Meltdown t-shirt — front view. Black heavyweight cotton with small white Zendy Wear wordmark on left chest.">
+                     alt="Sun &amp; Moon Meltdown — frente, logótipo Zendy Wear no peito.">
               </div>
               <div class="view-pane active" id="v-sun-p-back" role="tabpanel" aria-labelledby="v-sun-t-back" tabindex="0">
                 <img data-responsive data-quality="max" src="/assets/img/products/Sun_Back.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Sun and Moon Meltdown t-shirt — back view. A crying anthropomorphic sun and moon drip long checkered black-and-white tears across a swirling psychedelic galaxy of ringed planets in neon pink, purple, lime and yellow.">
+                     alt="Sun &amp; Moon Meltdown — costas, sol e lua a chorar com lágrimas xadrez numa galáxia psicadélica.">
               </div>
               <div class="view-pane" id="v-sun-p-collar" role="tabpanel" aria-labelledby="v-sun-t-collar" tabindex="0" hidden>
                 <img data-responsive data-quality="max" src="/assets/img/products/Detail_Collar.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Interior collar label — Zendy Wear care tag.">
+                     alt="Etiqueta interior Zendy Wear."
               </div>
             </div>
             <div class="view-tabs" role="tablist" aria-label="Sun and Moon Meltdown views">
@@ -471,15 +471,15 @@ img{-webkit-user-drag:none;user-drag:none}
             <div class="view-stage">
               <div class="view-pane" id="v-skull-p-front" role="tabpanel" aria-labelledby="v-skull-t-front" tabindex="0" hidden>
                 <img data-responsive data-quality="max" src="/assets/img/products/Logo_Front.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Neon Skull Melt t-shirt — front view. Black heavyweight cotton with small white Zendy Wear wordmark on left chest.">
+                     alt="Neon Skull Melt — frente, logótipo Zendy Wear no peito.">
               </div>
               <div class="view-pane active" id="v-skull-p-back" role="tabpanel" aria-labelledby="v-skull-t-back" tabindex="0">
                 <img data-responsive data-quality="max" src="/assets/img/products/Skull_Back.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Neon Skull Melt t-shirt — back view. Cluster of melting skulls dripping neon pink, lime and purple, with displaced floating eyeballs.">
+                     alt="Neon Skull Melt — costas, caveiras derretidas em neon rosa, lima e roxo.">
               </div>
               <div class="view-pane" id="v-skull-p-collar" role="tabpanel" aria-labelledby="v-skull-t-collar" tabindex="0" hidden>
                 <img data-responsive data-quality="max" src="/assets/img/products/Detail_Collar.jpeg" width="1200" height="1600" loading="lazy" decoding="async"
-                     alt="Interior collar label — Zendy Wear care tag.">
+                     alt="Etiqueta interior Zendy Wear."
               </div>
             </div>
             <div class="view-tabs" role="tablist" aria-label="Neon Skull Melt views">
@@ -659,6 +659,7 @@ img{-webkit-user-drag:none;user-drag:none}
         <form class="newsletter" novalidate>
           <label for="newsletter-email" class="sr-only" data-i18n="footer.emailLabel">Endereço de email</label>
           <input id="newsletter-email" type="email" inputmode="email" autocomplete="email"
+                 data-i18n-aria="footer.emailLabel" aria-label="Endereço de email"
                  data-i18n-placeholder="footer.emailPlaceholder"
                  placeholder="o.teu.email@algo.pt" required>
           <button type="submit" data-i18n="footer.join">Entrar</button>
@@ -765,7 +766,7 @@ img{-webkit-user-drag:none;user-drag:none}
                  data-i18n-placeholder="modal.contact.phEmail" placeholder="o.teu.email@algo.pt">
         </div>
         <div class="phone-field">
-          <span class="phone-field__label" data-i18n="modal.contact.labelPhone">Telefone</span>
+          <label id="contact-phone-label" for="contact-phone" class="phone-field__label" data-i18n="modal.contact.labelPhone">Telefone</label>
           <div class="phone-row">
             <label class="sr-only" for="contact-dial" data-i18n="modal.contact.labelDial">Indicativo</label>
             <select id="contact-dial" name="dial" class="phone-dial" aria-describedby="contact-dial-hint"></select>

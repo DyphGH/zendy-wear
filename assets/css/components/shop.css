@@ -253,7 +253,7 @@
 
 .size-block__guide {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--pink);
@@ -272,7 +272,7 @@
 .size-block__status {
   margin: 0.55rem 0 0;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--text-caption);
   letter-spacing: 0.08em;
   color: var(--muted);
 }
