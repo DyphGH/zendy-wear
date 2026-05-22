@@ -1,7 +1,7 @@
 /**
- * serve-html.js — inject public site URL into index.html + ensure OG JPEG exists.
+ * serve-html.js — inject public site URL into index.html + OG share image.
  */
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,19 +12,51 @@ const OG_JPG = join(ROOT, 'assets', 'img', 'og', 'og-default.jpg');
 const OG_SVG = join(ROOT, 'assets', 'img', 'og', 'og-default.svg');
 
 let indexTemplate = null;
+let ogImageBuffer = null;
+
+async function buildOgJpegBuffer() {
+  if (ogImageBuffer) return ogImageBuffer;
+  if (existsSync(OG_JPG)) {
+    ogImageBuffer = await readFile(OG_JPG);
+    return ogImageBuffer;
+  }
+  if (!existsSync(OG_SVG)) {
+    throw new Error('og-default.svg missing');
+  }
+  const sharp = (await import('sharp')).default;
+  ogImageBuffer = await sharp(OG_SVG, { density: 192 })
+    .resize(1200, 630, { fit: 'cover' })
+    .jpeg({ quality: 88, mozjpeg: true })
+    .toBuffer();
+  try {
+    await writeFile(OG_JPG, ogImageBuffer);
+  } catch {
+    /* ephemeral disk — ok if write fails */
+  }
+  return ogImageBuffer;
+}
 
 export async function ensureOgImage() {
-  if (existsSync(OG_JPG) || !existsSync(OG_SVG)) return;
   try {
-    const sharp = (await import('sharp')).default;
-    await sharp(OG_SVG, { density: 192 })
-      .resize(1200, 630, { fit: 'cover' })
-      .jpeg({ quality: 88, mozjpeg: true })
-      .toFile(OG_JPG);
-    console.log('[assets] Generated assets/img/og/og-default.jpg');
+    await buildOgJpegBuffer();
+    console.log('[assets] OG share image ready (1200×630 JPEG)');
   } catch (err) {
-    console.warn('[assets] og-default.jpg missing — run: npm run optimize');
+    console.warn('[assets] OG image not ready — social previews may fail until sharp/svg works');
     console.warn('[assets]', err.message);
+  }
+}
+
+/** Public route for Facebook/WhatsApp crawlers — always JPEG, not SVG. */
+export async function serveOgImage(_req, res) {
+  try {
+    const buf = await buildOgJpegBuffer();
+    res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.type('jpeg');
+    res.send(buf);
+  } catch (err) {
+    console.error('[og-image]', err);
+    res.status(503).type('text/plain').send('OG image unavailable');
   }
 }
 

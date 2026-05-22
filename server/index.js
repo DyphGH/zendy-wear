@@ -30,7 +30,7 @@ import {
 
 } from './middleware.js';
 
-import { ensureOgImage, loadIndexTemplate, sendIndexHtml } from './serve-html.js';
+import { ensureOgImage, loadIndexTemplate, sendIndexHtml, serveOgImage } from './serve-html.js';
 
 
 
@@ -265,6 +265,17 @@ app.post('/api/create-checkout-session', checkoutRateLimit, async (req, res) => 
 
 
 app.get(['/', '/index.html'], (req, res) => sendIndexHtml(req, res, CLIENT_URL));
+
+app.get(['/og.jpg', '/assets/img/og/og-default.jpg'], (req, res) => serveOgImage(req, res));
+
+app.use(
+  '/assets/img',
+  express.static(join(ROOT, 'assets', 'img'), {
+    setHeaders(res) {
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    },
+  }),
+);
 
 app.use(express.static(ROOT, { extensions: ['html'], index: false }));
 
