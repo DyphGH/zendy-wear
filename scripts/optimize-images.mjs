@@ -143,7 +143,7 @@ async function processOgImage() {
   const svgPath = join(OG_DIR, 'og-default.svg');
   const jpgPath = join(OG_DIR, 'og-default.jpg');
   if (!existsSync(svgPath)) { warn(`OG template ${svgPath} missing, skipping`); return; }
-  if (existsSync(jpgPath))  return;
+  if (existsSync(jpgPath) && !process.argv.includes('--force-og')) return;
   try {
     await sharp(svgPath, { density: 192 })
       .resize(1200, 630, { fit: 'cover' })
