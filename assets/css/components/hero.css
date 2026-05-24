@@ -39,9 +39,9 @@
   animation: orbF 8s ease-in-out infinite;
   will-change: transform;
 }
-.orb-1 { width: 420px; height: 420px; background: rgba(155, 48, 255, 0.07); top: -10%;   right: -5%;  animation-delay:  0s; }
-.orb-2 { width: 340px; height: 340px; background: rgba(255, 45, 202, 0.06); bottom: 5%;  left:  -10%; animation-delay: -3s; }
-.orb-3 { width: 260px; height: 260px; background: rgba(184, 255,   0, 0.04); top: 30%;  left:   40%; animation-delay: -5s; }
+.orb-1 { width: 420px; height: 420px; background: rgba(155, 48, 255, 0.16); top: -10%;   right: -5%;  animation-delay:  0s; }
+.orb-2 { width: 340px; height: 340px; background: rgba(255, 45, 202, 0.14); bottom: 5%;  left:  -10%; animation-delay: -3s; }
+.orb-3 { width: 280px; height: 280px; background: rgba(184, 255, 0, 0.11); top: 28%;  left:   38%; animation-delay: -5s; }
 @keyframes orbF {
   0%, 100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-30px) scale(1.06); }
@@ -99,7 +99,13 @@
   text-shadow: 0 0 16px rgba(255, 45, 202, 0.1);
 }
 .hero-title .l2 { display: block; color: var(--fg); }
-.hero-title .l3 { display: block; color: var(--pink); }
+.hero-title .l3 {
+  display: block;
+  color: var(--pink);
+  font-size: 0.42em;
+  letter-spacing: 0.08em;
+  margin-top: 0.05em;
+}
 
 .hero-sub {
   margin-bottom: 3rem;

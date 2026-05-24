@@ -90,7 +90,7 @@ const FLUID_FRAG = /* glsl */ `
     p.x *= uResolution.x / uResolution.y;
     p *= 1.2;
 
-    float t = uTime * 0.07;
+    float t = uTime * 0.095;
 
     // Mouse pulls the noise field gently
     vec2 mouseOffset = (uMouse - 0.5) * 0.4;
@@ -103,19 +103,21 @@ const FLUID_FRAG = /* glsl */ `
     );
     float f = fbm(p + 4.0 * r);
 
-    // Brand palette
-    vec3 dark   = vec3(0.016, 0.016, 0.039);
-    vec3 purple = vec3(0.608, 0.188, 1.000);
-    vec3 pink   = vec3(1.000, 0.176, 0.792);
-    vec3 lime   = vec3(0.722, 1.000, 0.000);
+    // Brand palette — boosted saturation for a more vivid wash
+    vec3 dark   = vec3(0.012, 0.010, 0.045);
+    vec3 purple = vec3(0.780, 0.280, 1.000);
+    vec3 pink   = vec3(1.000, 0.220, 0.920);
+    vec3 lime   = vec3(0.880, 1.000, 0.180);
+    vec3 cyan   = vec3(0.200, 0.950, 1.000);
 
     vec3 col = dark;
-    col = mix(col, purple, smoothstep(-0.2, 0.6, f));
-    col = mix(col, pink,   smoothstep(0.12, 0.9, length(r)) * 0.62);
-    col = mix(col, lime,   smoothstep(0.85, 1.05, f) * 0.4);
+    col = mix(col, purple, smoothstep(-0.15, 0.55, f) * 1.05);
+    col = mix(col, pink,   smoothstep(0.05, 0.85, length(r)) * 0.78);
+    col = mix(col, cyan,   smoothstep(0.35, 0.95, length(q)) * 0.35);
+    col = mix(col, lime,   smoothstep(0.75, 1.08, f) * 0.58);
 
-    float vig = smoothstep(1.05, 0.38, length(vUv - 0.5));
-    col *= mix(0.55, 1.0, vig);
+    float vig = smoothstep(1.05, 0.32, length(vUv - 0.5));
+    col *= mix(0.62, 1.12, vig);
 
     col *= uIntensity;
     gl_FragColor = vec4(col, 1.0);
@@ -222,9 +224,9 @@ export async function initShader(capability) {
     last = now;
     uniforms.uTime.value += FRAME_MS * 0.001;
     // Ease intensity in on first second (smoother than a hard pop-in)
-    const INTENSITY_MAX = 0.72;
+    const INTENSITY_MAX = 0.92;
     if (uniforms.uIntensity.value < INTENSITY_MAX) {
-      uniforms.uIntensity.value = Math.min(INTENSITY_MAX, uniforms.uIntensity.value + 0.018);
+      uniforms.uIntensity.value = Math.min(INTENSITY_MAX, uniforms.uIntensity.value + 0.022);
     }
     renderer.render(scene, camera);
   }

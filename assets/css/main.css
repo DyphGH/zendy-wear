@@ -671,12 +671,12 @@ html.has-cursor.has-modal-open #zendy-modal-root * {
   height: 100vh;
   z-index: var(--z-shader);  /* 0 — sits above body bg, below content */
   pointer-events: none;
-  opacity: 0.38;
+  opacity: 0.5;
   mix-blend-mode: screen;    /* immersive purple/pink wash across the page */
   will-change: opacity;
   animation: shaderIn 1.2s ease 0.2s both;
 }
-@keyframes shaderIn { from { opacity: 0; } to { opacity: 0.38; } }
+@keyframes shaderIn { from { opacity: 0; } to { opacity: 0.5; } }
 @media (prefers-reduced-motion: reduce) {
   .shader-bg { animation: none; }
 }
@@ -711,11 +711,12 @@ html.no-3d body::before {
   inset: 0;
   z-index: var(--z-shader);
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.55;
   background:
-    radial-gradient(60vw 80vh at 18% 22%, rgba(155, 48, 255, 0.45), transparent 60%),
-    radial-gradient(50vw 70vh at 82% 78%, rgba(255, 45, 202, 0.32), transparent 65%),
-    radial-gradient(40vw 50vh at 50% 50%, rgba(184, 255, 0, 0.15), transparent 70%);
+    radial-gradient(60vw 80vh at 18% 22%, rgba(155, 48, 255, 0.62), transparent 58%),
+    radial-gradient(50vw 70vh at 82% 78%, rgba(255, 45, 202, 0.48), transparent 62%),
+    radial-gradient(42vw 55vh at 50% 45%, rgba(0, 229, 255, 0.22), transparent 68%),
+    radial-gradient(40vw 50vh at 50% 50%, rgba(184, 255, 0, 0.28), transparent 70%);
   animation: cssFluid 24s ease-in-out infinite alternate;
 }
 @keyframes cssFluid {

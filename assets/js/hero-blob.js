@@ -109,9 +109,9 @@ const BLOB_FRAG = /* glsl */ `
     float fres = pow(1.0 - max(dot(N, V), 0.0), 2.0);
 
     // Brand palette ramp driven by displacement + time
-    vec3 c1 = vec3(0.608, 0.188, 1.000); // purple
-    vec3 c2 = vec3(1.000, 0.176, 0.792); // pink
-    vec3 c3 = vec3(0.722, 1.000, 0.000); // lime
+    vec3 c1 = vec3(0.780, 0.280, 1.000); // purple
+    vec3 c2 = vec3(1.000, 0.220, 0.920); // pink
+    vec3 c3 = vec3(0.880, 1.000, 0.180); // lime
 
     float t = vDisplacement + 0.5 + sin(uTime * 0.5) * 0.1;
     vec3 col = mix(c1, c2, smoothstep(0.0, 0.7, t));
