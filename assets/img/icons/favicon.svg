@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Zendy Wear">
-  <rect width="32" height="32" fill="#04040a"/>
-  <!-- "Z" mark in Bebas-style geometric construction -->
+  <rect width="32" height="32" rx="6" fill="#04040a"/>
   <path d="M7 8h18l-12 14h12v2H6l12-14H7V8z" fill="#f0ede8"/>
-  <!-- accent dot for the ® / brand mark vibe -->
   <circle cx="25.5" cy="9" r="1.4" fill="#ff2dca"/>
 </svg>

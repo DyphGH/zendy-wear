@@ -84,76 +84,86 @@ async function processProductImage(srcPath) {
   return generated.sort((a, b) => a - b);
 }
 
-async function processFavicons(logoPath) {
+const BRAND_BG = { r: 4, g: 4, b: 10, alpha: 1 };
+
+/** logo.svg is black-on-transparent; PWA/home-screen needs cream on brand bg. */
+async function ensureAppIconSvg(logoPath, appIconPath) {
+  const { readFile: rf } = await import('node:fs/promises');
+  let svg = await rf(logoPath, 'utf8');
+  svg = svg.replace(/fill="rgba\(0,0,0,1\)"/gi, 'fill="#f0ede8"');
+  if (!svg.includes('fill="#04040a"')) {
+    svg = svg.replace(
+      /<svg([^>]*)>/,
+      '<svg$1>\n  <rect width="1024" height="1024" fill="#04040a"/>',
+    );
+    svg = svg.replace(/<g>\s*/i, '<g transform="translate(102 102) scale(0.80)">\n  ');
+  }
+  await writeFile(appIconPath, svg, 'utf8');
+  return appIconPath;
+}
+
+async function renderSquareIcon(srcPath, outPath, w, { maskable = false, force = false } = {}) {
+  if (existsSync(outPath) && !force) return;
+  const pad = maskable ? 0.12 : 0.08;
+  const inner = Math.round(w * (1 - pad * 2));
+  await sharp(srcPath, { density: 384 })
+    .resize({ width: inner, height: inner, fit: 'contain', background: BRAND_BG })
+    .extend({
+      top: Math.round(w * pad),
+      bottom: Math.round(w * pad),
+      left: Math.round(w * pad),
+      right: Math.round(w * pad),
+      background: BRAND_BG,
+    })
+    .png({ compressionLevel: 9 })
+    .toFile(outPath);
+}
+
+async function processFavicons(logoPath, { force = false } = {}) {
   if (!existsSync(logoPath)) { warn(`logo not found at ${logoPath}, skipping favicons`); return; }
+  const appIconPath = join(ICONS_DIR, 'app-icon.svg');
+  await ensureAppIconSvg(logoPath, appIconPath);
+  ok('app-icon.svg (cream mark on #04040a)');
+
   const sizes = [
     { name: 'favicon-16.png',         w: 16 },
     { name: 'favicon-32.png',         w: 32 },
     { name: 'apple-touch-icon.png',   w: 180 },
     { name: 'icon-192.png',           w: 192 },
     { name: 'icon-512.png',           w: 512 },
-    { name: 'icon-maskable-512.png',  w: 512, padding: 0.1 },
+    { name: 'icon-maskable-192.png',  w: 192, maskable: true },
+    { name: 'icon-maskable-512.png',  w: 512, maskable: true },
   ];
   for (const s of sizes) {
     const out = join(ICONS_DIR, s.name);
-    if (existsSync(out)) continue;
     try {
-      const pipeline = sharp(logoPath, { density: 384 })
-        .resize({
-          width: s.w,
-          height: s.w,
-          fit: 'contain',
-          background: { r: 4, g: 4, b: 10, alpha: 1 }, // brand bg
-        });
-      if (s.padding) {
-        // Maskable icons need safe-zone padding (10%).
-        const inner = Math.round(s.w * (1 - s.padding * 2));
-        await sharp(logoPath, { density: 384 })
-          .resize({ width: inner, height: inner, fit: 'contain', background: { r: 4, g: 4, b: 10, alpha: 1 } })
-          .extend({
-            top:    Math.round(s.w * s.padding),
-            bottom: Math.round(s.w * s.padding),
-            left:   Math.round(s.w * s.padding),
-            right:  Math.round(s.w * s.padding),
-            background: { r: 4, g: 4, b: 10, alpha: 1 },
-          })
-          .png()
-          .toFile(out);
-      } else {
-        await pipeline.png().toFile(out);
-      }
+      await renderSquareIcon(appIconPath, out, s.w, { maskable: s.maskable, force });
       ok(s.name);
     } catch (e) {
       err(`${s.name} — ${e.message}`);
     }
   }
-
-  // Also output a copy of logo.svg as favicon.svg for modern browsers.
-  const faviconSvg = join(ICONS_DIR, 'favicon.svg');
-  if (!existsSync(faviconSvg)) {
-    try {
-      const { copyFile } = await import('node:fs/promises');
-      await copyFile(logoPath, faviconSvg);
-      ok('favicon.svg');
-    } catch (e) { err(`favicon.svg — ${e.message}`); }
-  }
 }
 
-async function processOgImage() {
+async function processOgImage({ force = false } = {}) {
   const svgPath = join(OG_DIR, 'og-default.svg');
   const jpgPath = join(OG_DIR, 'og-default.jpg');
+  const rootOg = join(ROOT, 'og.jpg');
   if (!existsSync(svgPath)) { warn(`OG template ${svgPath} missing, skipping`); return; }
-  if (existsSync(jpgPath) && !process.argv.includes('--force-og')) return;
+  if (!force && existsSync(jpgPath) && existsSync(rootOg)) return;
   try {
-    await sharp(svgPath, { density: 192 })
+    const buf = await sharp(svgPath, { density: 192 })
       .resize(1200, 630, { fit: 'cover' })
       .jpeg({ quality: 88, mozjpeg: true })
-      .toFile(jpgPath);
-    ok('og-default.jpg (1200×630)');
+      .toBuffer();
+    await writeFile(jpgPath, buf);
+    await writeFile(rootOg, buf);
+    ok('og-default.jpg + /og.jpg (1200×630, static-host friendly)');
   } catch (e) { err(`og-default.jpg — ${e.message}`); }
 }
 
 async function main() {
+  const force = process.argv.includes('--force');
   console.log('Zendy Wear — image optimisation\n');
   await ensureDir(PRODUCTS_DIR);
   await ensureDir(ICONS_DIR);
@@ -176,10 +186,10 @@ async function main() {
   ok('manifest.json (responsive <picture> srcsets)');
 
   console.log('\nFavicons:');
-  await processFavicons(join(ICONS_DIR, 'logo.svg'));
+  await processFavicons(join(ICONS_DIR, 'logo.svg'), { force });
 
   console.log('\nOpen Graph:');
-  await processOgImage();
+  await processOgImage({ force: force || process.argv.includes('--force-og') });
 
   console.log('\nDone.\n');
 }
