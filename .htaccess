@@ -9,6 +9,8 @@
   RewriteEngine On
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Social preview image (same file as Express /og.jpg route)
+  RewriteRule ^og\.jpg$ /assets/img/og/og-default.jpg [L]
 </IfModule>
 
 # ---- Security headers -------------------------------------------------------
