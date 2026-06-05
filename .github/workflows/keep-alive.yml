@@ -1,10 +1,11 @@
-# Ping the Render web service every 10 minutes so the free tier does not spin down
-# after ~15 min of inactivity. Optional repo variable SITE_URL overrides the default.
+# Backup keep-alive for Render free tier (spins down after ~15 min idle).
+# GitHub cron is often delayed — use UptimeRobot every 5 min as primary (see RENDER.md).
 name: Keep Render awake
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
+    - cron: '3,8,13,18,23,28,33,38,43,48,53,58 * * * *'
   workflow_dispatch:
 
 permissions: {}

@@ -1,20 +1,38 @@
 # Deploy no Render (free tier)
 
-No plano **gratuito**, o serviço Web **adormece** após ~15 minutos sem pedidos. O primeiro visitante depois disso espera o *cold start* (muitas vezes 30–90 s) até o Node arrancar.
+No plano **gratuito**, o serviço Web **adormece** após ~15 minutos sem pedidos. O primeiro visitante depois disso espera o *cold start* (30–90 s).
 
-## O que já está no repo
+## ⚠️ Keep-alive: o que realmente funciona
 
-1. **Arranque rápido** — o servidor aceita tráfego antes de gerar o OG JPEG / carregar o template HTML.
-2. **Keep-alive** — workflow GitHub Actions (`.github/workflows/keep-alive.yml`) faz ping a `/api/health` de **10 em 10 minutos**.
+O workflow GitHub Actions **sozinho não chega**. O cron do GitHub atrasa muitas vezes (10–30+ min) e o Render adormece na mesma.
 
-### Ativar o keep-alive (recomendado, grátis)
+**Solução recomendada (grátis, 2 minutos): UptimeRobot**
 
-1. GitHub → repositório → **Settings** → **Secrets and variables** → **Actions** → **Variables**
-2. Criar variável **`SITE_URL`** = URL pública do Render, ex.: `https://zendy-wear.onrender.com` (sem `/` no fim)
-3. **Actions** → workflow **Keep Render awake** → **Run workflow** (teste manual)
-4. Confirmar que o job devolve HTTP 200
+1. https://uptimerobot.com → conta grátis
+2. **Add New Monitor**
+3. Monitor Type: **HTTP(s)**
+4. URL: `https://zendy-wear.onrender.com/api/health`
+5. Monitoring Interval: **5 minutes**
+6. Guardar
 
-Com isto, o site fica **acordado** na maior parte do tempo. Ainda pode haver espera **logo após um deploy** (até o primeiro ping ou visita).
+Isto mantém o site acordado de forma **fiável**. O GitHub Actions fica só como **backup**.
+
+## GitHub Actions (backup)
+
+Workflow: `.github/workflows/keep-alive.yml` — ping de 5 em 5 min (duplo cron).
+
+Variável opcional no GitHub: **`SITE_URL`** = `https://zendy-wear.onrender.com`
+
+Confirma em **Actions** que aparecem runs automáticos com evento `schedule` (não só `workflow_dispatch`). Se só vires runs manuais, o UptimeRobot é obrigatório.
+
+## Horas free no Render
+
+| Situação | Horas/mês |
+|----------|-----------|
+| Site adormece sem visitas | Poucas |
+| Keep-alive 24/7 (1 serviço) | ~720–744 h (limite: **750 h**) |
+
+Pings não têm quota à parte — conta o tempo com o Node **ligado**.
 
 ## Variáveis de ambiente no Render
 
@@ -27,19 +45,17 @@ Com isto, o site fica **acordado** na maior parte do tempo. Ainda pode haver esp
 
 Webhook Stripe: `https://zendy-wear.onrender.com/api/webhooks/stripe`
 
-## Se quiseres zero espera (sempre)
+## Zero espera (sempre)
 
-| Opção | Custo | Notas |
-|-------|-------|-------|
-| **Render Starter** (~7 USD/mês) | Pago | Instância sempre ligada, sem spin-down |
-| **UptimeRobot** (alternativa ao GitHub) | Grátis | Monitor HTTP a cada 5 min no mesmo `/api/health` |
-| **Static + API** (avançado) | Grátis static | Site estático no CDN; só checkout/API no Render — primeiro ecrã instantâneo, cold start só no pagamento |
+| Opção | Custo |
+|-------|-------|
+| **UptimeRobot** a cada 5 min | Grátis |
+| **Render Starter** | ~7 USD/mês — sem spin-down |
+| Site estático + API separada | Grátis — página instantânea; cold start só no checkout |
 
-No free tier, **não há forma de eliminar 100%** o cold start sem keep-alive ou plano pago. O keep-alive resolve o caso típico (“primeira pessoa do dia”).
+## Checklist
 
-## Checklist pós-deploy
-
-- [ ] `CLIENT_URL` = URL final do Render
-- [ ] `SITE_URL` no GitHub = mesma URL
+- [ ] UptimeRobot configurado (5 min) ← **o mais importante**
+- [ ] `CLIENT_URL` no Render = URL final
 - [ ] `https://…/api/health` → `{"ok":true,...}`
-- [ ] Workflow keep-alive a correr (última execução < 15 min)
+- [ ] GitHub Actions com runs `schedule` (backup)
