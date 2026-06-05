@@ -281,24 +281,20 @@ app.use(express.static(ROOT, { extensions: ['html'], index: false }));
 
 
 
-await ensureOgImage();
-
-await loadIndexTemplate();
-
+// Accept traffic immediately — cold starts on Render free tier block on this.
 app.listen(PORT, () => {
-
   console.log(`Zendy Wear → ${CLIENT_URL}`);
 
   if (!stripe) console.warn('⚠ STRIPE_SECRET_KEY missing — checkout API disabled');
-
   else if (!stripePublishable) console.warn('⚠ STRIPE_PUBLISHABLE_KEY missing — embedded checkout disabled');
-
   if (!stripeWebhookSecret) {
-
     console.warn('⚠ STRIPE_WEBHOOK_SECRET missing — promo unit counter will not auto-update');
-
   }
+});
 
+// Warm caches after listen (OG JPEG + index template for __SITE_ORIGIN__).
+void Promise.all([loadIndexTemplate(), ensureOgImage()]).catch((err) => {
+  console.warn('[startup]', err.message || err);
 });
 
 
